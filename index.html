@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>UVG — Coastal Collection | Pre-Engineered Beachfront Homes</title>
+<meta name="description" content="Type an address, get a feasibility report, pick a pre-engineered coastal home, and watch it built in a day. UVG — Owners Representatives for Design, Engineering, Architecture and Development." />
+<style>
+  :root{
+    --bg:#060b12; --bg2:#0a121d; --fg:#f5f3ea; --muted:#9aa6b2;
+    --sand:#d9b176; --teal:#4fb3bf; --line:rgba(255,255,255,.10);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+  a{color:inherit;}
+
+  .progress{position:fixed;left:0;top:0;height:3px;width:0;background:var(--sand);opacity:.85;z-index:9999;transition:width .1s linear;}
+  .nav{position:fixed;inset:0 0 auto 0;height:64px;display:flex;align-items:center;justify-content:space-between;
+       padding:0 24px;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,0));z-index:100;}
+  .brand{font-weight:800;letter-spacing:.18em;font-size:14px;}
+  .navlinks{display:flex;gap:24px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;}
+  .navlinks a{opacity:.75;text-decoration:none;transition:opacity .2s;}
+  .navlinks a:hover{opacity:1;}
+
+  /* pinned cinematic sections */
+  .pinsec{position:relative;}
+  .pin{position:sticky;top:0;height:100vh;overflow:hidden;}
+  .stage{position:relative;width:100%;height:100%;background:#000;}
+  .overlay{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;padding:6vw;z-index:5;}
+  .overlay-top{align-items:start;padding-top:9vh;}
+  .copy{max-width:80ch;text-align:center;line-height:1.25;font-size:clamp(22px,4.4vw,52px);font-weight:800;
+        opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease;text-shadow:0 1px 30px rgba(0,0,0,.5);}
+  .copy.small{font-size:clamp(14px,2vw,20px);font-weight:400;color:var(--muted);margin-top:1rem;}
+  .copy.accent{color:var(--sand);}
+  .show{opacity:1 !important;transform:translateY(0) !important;}
+
+  .scene-svg{position:absolute;inset:0;width:100%;height:100%;}
+
+  /* ---- Hero (scene 1) ---- */
+  .sky{fill:url(#skyGrad);}
+  .ocean{fill:url(#oceanGrad);}
+  .wavepath{animation:waveshift 14s linear infinite;}
+  @keyframes waveshift{from{transform:translateX(0)}to{transform:translateX(-200px)}}
+  .star{fill:#fff;opacity:.7;animation:twinkle 3.5s ease-in-out infinite;}
+  .star:nth-child(2n){animation-delay:1.2s;}
+  .star:nth-child(3n){animation-delay:2.1s;}
+  @keyframes twinkle{0%,100%{opacity:.25}50%{opacity:.9}}
+  .scroll-cue{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.2em;
+              color:var(--muted);text-transform:uppercase;animation:bob 2s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+  /* ---- Address (scene 2) ---- */
+  .browser{width:min(720px,86vw);background:#10171f;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+           box-shadow:0 30px 80px rgba(0,0,0,.55);}
+  .browser-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#0c1218;border-bottom:1px solid var(--line);}
+  .dot{width:10px;height:10px;border-radius:50%;background:#3a4452;}
+  .addr-field{flex:1;background:#1a232d;border-radius:8px;padding:8px 14px;font-family:'SF Mono',Consolas,monospace;font-size:14px;color:var(--fg);
+              display:flex;align-items:center;white-space:nowrap;overflow:hidden;}
+  .caret{display:inline-block;width:2px;height:16px;background:var(--sand);margin-left:2px;animation:blink 1s step-end infinite;}
+  @keyframes blink{50%{opacity:0}}
+  .browser-body{padding:32px;min-height:240px;display:grid;place-items:center;}
+  .ve-logo{font-size:12px;letter-spacing:.3em;color:var(--teal);text-transform:uppercase;margin-bottom:10px;}
+  .ve-question{font-size:clamp(18px,2.6vw,28px);font-weight:700;text-align:center;}
+  .pin-marker{margin-top:24px;width:28px;height:28px;border-radius:50%;background:var(--sand);
+              opacity:0;transform:scale(.4) translateY(-20px);transition:opacity .4s ease,transform .4s ease;
+              box-shadow:0 0 0 8px rgba(217,177,118,.18);}
+  .pin-marker.show{opacity:1;transform:scale(1) translateY(0);}
+
+  /* ---- Report (scene 3) ---- */
+  .report-card{width:min(640px,90vw);background:#0e151d;border:1px solid var(--line);border-radius:16px;padding:28px 28px 12px;
+               box-shadow:0 30px 80px rgba(0,0,0,.55);}
+  .report-card h3{margin:0 0 18px;font-size:13px;letter-spacing:.25em;color:var(--teal);text-transform:uppercase;}
+  .report-row{display:grid;grid-template-columns:160px 1fr;gap:16px;padding:14px 0;border-top:1px solid var(--line);
+              opacity:0;transform:translateX(-18px);transition:opacity .5s ease,transform .5s ease;}
+  .report-row.show{opacity:1;transform:translateX(0);}
+  .report-row .k{font-size:11px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;align-self:center;}
+  .report-row .v{font-size:15px;font-weight:600;}
+
+  /* ---- Plan (scene 4) ---- */
+  .plan-grid{display:flex;gap:20px;width:min(900px,92vw);}
+  .plan-card{flex:1;background:#0e151d;border:1px solid var(--line);border-radius:16px;padding:20px;text-align:center;
+            transition:transform .4s ease,border-color .4s ease,opacity .4s ease;opacity:.55;}
+  .plan-card .roof{width:100%;height:60px;margin-bottom:10px;}
+  .plan-card h4{margin:0 0 6px;font-size:15px;}
+  .plan-card p{margin:0;font-size:12px;color:var(--muted);}
+  .plan-card.active{opacity:1;transform:translateY(-10px) scale(1.06);border-color:var(--sand);box-shadow:0 20px 50px rgba(0,0,0,.5);}
+  .plan-card.active .badge{display:inline-block;}
+  .badge{display:none;margin-top:10px;font-size:10px;letter-spacing:.2em;color:var(--sand);text-transform:uppercase;}
+
+  /* ---- Factory (scene 5) & Road (scene 6) & Day (scene 7) shared SVG labels ---- */
+  .panel-label{font-size:13px;fill:var(--fg);font-weight:600;letter-spacing:.05em;}
+  .trailer-label{font-size:12px;fill:var(--muted);letter-spacing:.2em;text-transform:uppercase;}
+
+  /* ---- Catalog & Trust (flow sections) ---- */
+  .flow{padding:14vh 6vw;border-top:1px solid var(--line);}
+  .flow h2{font-size:clamp(28px,5vw,46px);margin:0 0 8px;}
+  .flow .lede{color:var(--muted);max-width:64ch;margin:0 0 50px;font-size:16px;line-height:1.6;}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;}
+  .card{background:#0e151d;border:1px solid var(--line);border-radius:18px;padding:26px;
+        opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+  .card.visible{opacity:1;transform:translateY(0);}
+  .card .tag{font-size:11px;letter-spacing:.2em;color:var(--teal);text-transform:uppercase;margin-bottom:10px;}
+  .card h3{margin:0 0 10px;font-size:19px;}
+  .card p{margin:0 0 18px;color:var(--muted);font-size:14px;line-height:1.6;}
+  .card .price{font-size:18px;font-weight:800;color:var(--sand);margin-bottom:16px;}
+  .btn-sm{padding:10px 22px;font-size:11px;}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:36px;}
+  .btn{display:inline-block;padding:14px 26px;border-radius:999px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;
+       text-decoration:none;font-weight:700;transition:transform .2s ease,opacity .2s ease;}
+  .btn-primary{background:var(--sand);color:#1a140a;}
+  .btn-secondary{background:transparent;color:var(--fg);border:1px solid var(--line);}
+  .btn:hover{transform:translateY(-2px);opacity:.92;}
+
+  .about{max-width:74ch;color:var(--muted);font-size:16px;line-height:1.8;margin-bottom:50px;}
+  .about strong{color:var(--fg);}
+  .footer-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;
+              margin-top:60px;padding-top:40px;border-top:1px solid var(--line);}
+  .footer-cta .contact{font-size:14px;color:var(--muted);line-height:1.8;}
+  .foot-note{padding:30px 6vw;text-align:center;font-size:12px;color:var(--muted);letter-spacing:.1em;}
+
+  @media (max-width:760px){
+    .plan-grid{flex-direction:column;}
+    .plan-card.active{transform:none;}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="nav">
+  <div class="brand">UVG</div>
+  <div class="navlinks">
+    <a href="#catalog">Catalog</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- ============ 1. HERO ============ -->
+<section class="pinsec" data-duration="1600" id="top">
+  <div class="pin">
+    <div class="stage">
+      <svg class="scene-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#060b12"/>
+            <stop offset="55%" stop-color="#0c1a2b"/>
+            <stop offset="100%" stop-color="#13283b"/>
+          </linearGradient>
+          <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#13283b"/>
+            <stop offset="100%" stop-color="#060b12"/>
+          </linearGradient>
+        </defs>
+        <rect class="sky" x="0" y="0" width="1200" height="520"/>
+        <circle class="star" cx="120" cy="80" r="1.6"/>
+        <circle class="star" cx="300" cy="140" r="1.2"/>
+        <circle class="star" cx="540" cy="60" r="1.8"/>
+        <circle class="star" cx="760" cy="160" r="1.3"/>
+        <circle class="star" cx="940" cy="90" r="1.6"/>
+        <circle class="star" cx="1080" cy="180" r="1.2"/>
+        <circle class="star" cx="200" cy="220" r="1.1"/>
+        <circle class="star" cx="640" cy="240" r="1.4"/>
+        <circle cx="980" cy="120" r="46" fill="#f5f3ea" opacity="0.9"/>
+        <circle cx="980" cy="120" r="70" fill="#f5f3ea" opacity="0.08"/>
+        <rect class="ocean" x="0" y="520" width="1200" height="280"/>
+        <g class="wavepath" opacity="0.18" stroke="#f5f3ea" stroke-width="1.5" fill="none">
+          <path d="M-200 540 Q -100 530 0 540 T 200 540 T 400 540 T 600 540 T 800 540 T 1000 540 T 1200 540 T 1400 540"/>
+          <path d="M-200 580 Q -100 568 0 580 T 200 580 T 400 580 T 600 580 T 800 580 T 1000 580 T 1200 580 T 1400 580"/>
+          <path d="M-200 630 Q -100 615 0 630 T 200 630 T 400 630 T 600 630 T 800 630 T 1000 630 T 1200 630 T 1400 630"/>
+        </g>
+      </svg>
+      <div class="overlay">
+        <div>
+          <div class="copy show">Type an address.<br/>Live on the water.</div>
+          <div class="copy small show">Pre-engineered steel homes for beachfront, waterfront and lakefront sites — designed, engineered and delivered by one accountable team.</div>
+        </div>
+      </div>
+      <div class="scroll-cue">Scroll to begin ↓</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. THE ADDRESS ============ -->
+<section class="pinsec" data-duration="2200" id="s2">
+  <div class="pin">
+    <div class="stage" style="background:#060b12;">
+      <div class="overlay" style="display:flex;flex-direction:column;gap:28px;">
+        <div class="copy small show" style="margin:0;">What can I build here?</div>
+        <div class="browser">
+          <div class="browser-bar">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <div class="addr-field"><span id="s2-addr"></span><span class="caret"></span></div>
+          </div>
+          <div class="browser-body">
+            <div style="text-align:center;">
+              <div class="ve-logo">Vision Engine</div>
+              <div class="ve-question">Reading the parcel…</div>
+              <div class="pin-marker" id="s2-pin"></div>
+            </div>
+          </div>
+        </div>
+        <div class="copy small show" style="margin:0;">Drop a pin. Vision Engine reads the parcel.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. THE REPORT ============ -->
+<section class="pinsec" data-duration="2400" id="s3">
+  <div class="pin">
+    <div class="stage" style="background:#060b12;">
+      <div class="overlay">
+        <div>
+          <div class="report-card">
+            <h3>Feasibility Report</h3>
+            <div class="report-row" data-row="0"><div class="k">Zoning</div><div class="v">R-1 Coastal Residential</div></div>
+            <div class="report-row" data-row="1"><div class="k">Flood Zone</div><div class="v">AE — Base Flood Elevation 9 ft</div></div>
+            <div class="report-row" data-row="2"><div class="k">Setbacks</div><div class="v">25 ft front / 10 ft side / 20 ft rear</div></div>
+            <div class="report-row" data-row="3"><div class="k">Buildable Envelope</div><div class="v">~2,400 sq ft footprint</div></div>
+            <div class="report-row" data-row="4"><div class="k">Build Range</div><div class="v">$380K – $520K</div></div>
+          </div>
+          <div class="copy small show" style="margin-top:26px;">Generated in seconds. No guesswork before you commit.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. THE PLAN ============ -->
+<section class="pinsec" data-duration="2000" id="s4">
+  <div class="pin">
+    <div class="stage" style="background:#060b12;">
+      <div class="overlay" style="flex-direction:column;gap:30px;">
+        <div class="copy show" style="font-size:clamp(20px,3.4vw,38px);margin:0;">Pick Your Plan</div>
+        <div class="plan-grid">
+          <div class="plan-card" id="s4-card1">
+            <svg class="roof" viewBox="0 0 100 60"><polygon points="10,40 50,12 90,40" fill="none" stroke="#4fb3bf" stroke-width="3"/><rect x="20" y="40" width="60" height="14" fill="none" stroke="#4fb3bf" stroke-width="3"/></svg>
+            <h4>The Dune</h4>
+            <p>1,600 sf · 3bd / 2ba</p>
+          </div>
+          <div class="plan-card" id="s4-card2">
+            <svg class="roof" viewBox="0 0 100 60">
+              <rect x="12" y="18" width="76" height="8" fill="none" stroke="#d9b176" stroke-width="3"/>
+              <rect x="12" y="26" width="32" height="24" fill="none" stroke="#d9b176" stroke-width="3"/>
+              <rect x="48" y="26" width="40" height="24" fill="rgba(79,179,191,.18)" stroke="#4fb3bf" stroke-width="3"/>
+              <line x1="58" y1="26" x2="58" y2="50" stroke="#4fb3bf" stroke-width="2"/>
+              <line x1="68" y1="26" x2="68" y2="50" stroke="#4fb3bf" stroke-width="2"/>
+              <line x1="78" y1="26" x2="78" y2="50" stroke="#4fb3bf" stroke-width="2"/>
+            </svg>
+            <h4>The Shoreline</h4>
+            <p>3bd / 2ba · 2,000 sf · Floor-to-ceiling glass, ocean view</p>
+            <div class="badge">Selected</div>
+          </div>
+          <div class="plan-card" id="s4-card3">
+            <svg class="roof" viewBox="0 0 100 60"><polygon points="10,40 50,14 90,40" fill="none" stroke="#4fb3bf" stroke-width="3"/><rect x="20" y="40" width="60" height="14" fill="none" stroke="#4fb3bf" stroke-width="3"/></svg>
+            <h4>The Tideline</h4>
+            <p>3,100 sf · 4bd / 3.5ba</p>
+          </div>
+        </div>
+        <div class="copy small show" style="margin:0;">Every plan pre-engineered in cold-formed steel — PE stamped for coastal wind, flood elevation and salt air.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. THE FACTORY ============ -->
+<section class="pinsec" data-duration="2400" id="s5">
+  <div class="pin">
+    <div class="stage" style="background:#0a121d;">
+      <svg class="scene-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+        <line x1="0" y1="620" x2="1200" y2="620" stroke="#26323f" stroke-width="2"/>
+        <rect x="780" y="460" width="340" height="320" fill="none" stroke="#3a4452" stroke-width="2" rx="8"/>
+        <text x="950" y="445" text-anchor="middle" class="trailer-label">40' Trailer</text>
+
+        <g id="s5-panel1" style="opacity:0;transform:translateX(-260px);transition:opacity .6s ease,transform .6s ease;">
+          <rect x="60" y="480" width="180" height="50" rx="6" fill="#13283b" stroke="#4fb3bf" stroke-width="2"/>
+          <text x="150" y="510" text-anchor="middle" class="panel-label">Roof Truss A</text>
+        </g>
+        <g id="s5-panel2" style="opacity:0;transform:translateX(-260px);transition:opacity .6s ease,transform .6s ease;">
+          <rect x="60" y="550" width="180" height="50" rx="6" fill="rgba(79,179,191,.12)" stroke="#4fb3bf" stroke-width="2"/>
+          <text x="150" y="580" text-anchor="middle" class="panel-label">Glass Wall — Ocean Side</text>
+        </g>
+        <g id="s5-panel3" style="opacity:0;transform:translateX(-260px);transition:opacity .6s ease,transform .6s ease;">
+          <rect x="60" y="620" width="180" height="50" rx="6" fill="#13283b" stroke="#4fb3bf" stroke-width="2"/>
+          <text x="150" y="650" text-anchor="middle" class="panel-label">Floor Joist Set</text>
+        </g>
+        <g id="s5-panel4" style="opacity:0;transform:translateX(-260px);transition:opacity .6s ease,transform .6s ease;">
+          <rect x="60" y="690" width="180" height="50" rx="6" fill="#13283b" stroke="#d9b176" stroke-width="2"/>
+          <text x="150" y="720" text-anchor="middle" class="panel-label">Wall Panel C04</text>
+        </g>
+
+        <g id="s5-load1" style="opacity:0;transition:opacity .4s ease;"><rect x="800" y="490" width="300" height="50" rx="6" fill="#1a232d" stroke="#4fb3bf" stroke-width="2"/></g>
+        <g id="s5-load2" style="opacity:0;transition:opacity .4s ease;"><rect x="800" y="560" width="300" height="50" rx="6" fill="rgba(79,179,191,.12)" stroke="#4fb3bf" stroke-width="2"/></g>
+        <g id="s5-load3" style="opacity:0;transition:opacity .4s ease;"><rect x="800" y="630" width="300" height="50" rx="6" fill="#1a232d" stroke="#4fb3bf" stroke-width="2"/></g>
+        <g id="s5-load4" style="opacity:0;transition:opacity .4s ease;"><rect x="800" y="700" width="300" height="50" rx="6" fill="#1a232d" stroke="#d9b176" stroke-width="2"/></g>
+      </svg>
+      <div class="overlay overlay-top">
+        <div>
+          <div class="copy" data-show-at="0.04" data-hide-at="0.92">Built in the factory.</div>
+          <div class="copy small" data-show-at="0.08" data-hide-at="0.96">Every section panelized in erection sequence, sized to fit a standard 40-foot trailer.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. THE ROAD ============ -->
+<section class="pinsec" data-duration="2200" id="s6">
+  <div class="pin">
+    <div class="stage" style="background:#0a121d;">
+      <svg class="scene-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="duskGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#13283b"/>
+            <stop offset="100%" stop-color="#0a121d"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="1200" height="500" fill="url(#duskGrad)"/>
+        <g id="s6-far" style="transition:transform .1s linear;">
+          <ellipse cx="950" cy="470" rx="500" ry="120" fill="#1a3045"/>
+          <rect x="0" y="500" width="1200" height="60" fill="#1a3045"/>
+        </g>
+        <g id="s6-near" style="transition:transform .1s linear;">
+          <rect x="0" y="540" width="1200" height="20" fill="#26323f"/>
+          <rect x="0" y="560" width="1200" height="240" fill="#161c24"/>
+          <g stroke="#3a4452" stroke-width="6" stroke-dasharray="40 30">
+            <line x1="-100" y1="640" x2="1300" y2="640"/>
+          </g>
+        </g>
+        <g id="s6-truck" style="transition:transform .1s linear;">
+          <rect x="0" y="560" width="220" height="60" rx="6" fill="#1a232d" stroke="#d9b176" stroke-width="2"/>
+          <rect x="225" y="580" width="80" height="40" rx="4" fill="#13283b" stroke="#4fb3bf" stroke-width="2"/>
+          <circle cx="50" cy="630" r="14" fill="#0c1218" stroke="#3a4452" stroke-width="2"/>
+          <circle cx="170" cy="630" r="14" fill="#0c1218" stroke="#3a4452" stroke-width="2"/>
+          <circle cx="270" cy="630" r="14" fill="#0c1218" stroke="#3a4452" stroke-width="2"/>
+        </g>
+      </svg>
+      <div class="overlay">
+        <div>
+          <div class="copy" data-show-at="0.04" data-hide-at="0.92">On the road to the coast.</div>
+          <div class="copy small" data-show-at="0.5" data-hide-at="0.96">From the factory floor to the sand.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. THE DAY ============ -->
+<section class="pinsec" data-duration="2600" id="s7">
+  <div class="pin">
+    <div class="stage" style="background:#0a121d;">
+      <svg class="scene-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="dawnGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3a2b40"/>
+            <stop offset="100%" stop-color="#d97b5f"/>
+          </linearGradient>
+          <linearGradient id="dayGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4fb3bf"/>
+            <stop offset="100%" stop-color="#cfe9ec"/>
+          </linearGradient>
+          <linearGradient id="duskGrad2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0c1a2b"/>
+            <stop offset="100%" stop-color="#3a2b40"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="1200" height="520" fill="url(#dayGrad)"/>
+        <rect id="s7-dawn" x="0" y="0" width="1200" height="520" fill="url(#dawnGrad)" style="opacity:1;transition:opacity .2s linear;"/>
+        <rect id="s7-dusk" x="0" y="0" width="1200" height="520" fill="url(#duskGrad2)" style="opacity:0;transition:opacity .2s linear;"/>
+        <rect x="0" y="520" width="1200" height="280" fill="#cfae7e"/>
+        <rect x="0" y="520" width="1200" height="30" fill="#13283b" opacity="0.4"/>
+
+        <!-- House build sequence: modern flat-roof, 3bd/2ba, floor-to-ceiling glass on the ocean side -->
+        <g id="s7-floor" style="opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;">
+          <rect x="380" y="480" width="440" height="20" fill="#1a232d"/>
+        </g>
+        <g id="s7-wallL" style="opacity:0;transform:translateY(-30px);transition:opacity .6s ease,transform .6s ease;">
+          <rect x="380" y="380" width="200" height="100" fill="#26323f"/>
+        </g>
+        <g id="s7-roof" style="opacity:0;transform:translateY(-30px);transition:opacity .6s ease,transform .6s ease;">
+          <rect x="368" y="368" width="464" height="16" fill="#3a4452"/>
+        </g>
+        <g id="s7-glass" style="opacity:0;transform:translateY(-30px);transition:opacity .6s ease,transform .6s ease;">
+          <rect x="580" y="380" width="240" height="100" fill="rgba(79,179,191,.32)" stroke="#4fb3bf" stroke-width="2"/>
+          <line x1="640" y1="380" x2="640" y2="480" stroke="#4fb3bf" stroke-width="1.5"/>
+          <line x1="700" y1="380" x2="700" y2="480" stroke="#4fb3bf" stroke-width="1.5"/>
+          <line x1="760" y1="380" x2="760" y2="480" stroke="#4fb3bf" stroke-width="1.5"/>
+        </g>
+        <g id="s7-door" style="opacity:0;transform:scale(.6);transform-origin:465px 480px;transition:opacity .5s ease,transform .5s ease;">
+          <rect x="440" y="440" width="50" height="60" fill="#0c1218"/>
+        </g>
+      </svg>
+      <div class="overlay overlay-top">
+        <div>
+          <div class="copy" data-show-at="0.03" data-hide-at="0.20">Sunrise. Foundation set.</div>
+          <div class="copy" data-show-at="0.36" data-hide-at="0.58">Midday. Frame standing.</div>
+          <div class="copy" data-show-at="0.72" data-hide-at="0.90">Dusk. Shell complete.</div>
+          <div class="copy accent" data-show-at="0.90" data-hide-at="1.01">Built in a day.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. THE TOUR ============ -->
+<section class="pinsec" data-duration="1800" id="s8">
+  <div class="pin">
+    <div class="stage" style="background:#0a121d;">
+      <svg class="scene-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3a2b40"/>
+            <stop offset="50%" stop-color="#d9b176"/>
+            <stop offset="100%" stop-color="#f5d9a8"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="1200" height="500" fill="url(#goldGrad)"/>
+        <circle cx="950" cy="380" r="60" fill="#fff7e6" opacity="0.85"/>
+        <rect x="0" y="500" width="1200" height="300" fill="#0e1a26"/>
+        <rect x="0" y="500" width="1200" height="6" fill="#1a3045"/>
+        <!-- house silhouette: same modern flat-roof, floor-to-ceiling glass design -->
+        <rect x="370" y="440" width="460" height="16" fill="#0c1218"/>
+        <rect x="380" y="456" width="200" height="154" fill="#0c1218"/>
+        <rect x="580" y="456" width="240" height="154" fill="#ffe9b8" opacity="0.9"/>
+        <g stroke="#0c1218" stroke-width="3">
+          <line x1="640" y1="456" x2="640" y2="610"/>
+          <line x1="700" y1="456" x2="700" y2="610"/>
+          <line x1="760" y1="456" x2="760" y2="610"/>
+        </g>
+        <rect x="440" y="530" width="50" height="80" fill="#0a121d"/>
+        <!-- deck -->
+        <rect x="280" y="610" width="640" height="14" fill="#1a232d"/>
+        <g stroke="#0c1218" stroke-width="3">
+          <line x1="300" y1="624" x2="300" y2="660"/>
+          <line x1="400" y1="624" x2="400" y2="660"/>
+          <line x1="500" y1="624" x2="500" y2="660"/>
+          <line x1="600" y1="624" x2="600" y2="660"/>
+          <line x1="700" y1="624" x2="700" y2="660"/>
+          <line x1="800" y1="624" x2="800" y2="660"/>
+          <line x1="900" y1="624" x2="900" y2="660"/>
+        </g>
+      </svg>
+      <div class="overlay overlay-top">
+        <div>
+          <div class="copy" data-show-at="0.05" data-hide-at="0.45">Welcome home.</div>
+          <div class="copy small" data-show-at="0.20" data-hide-at="0.95">Deck. Great room. The water, right there.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9. THE CATALOG / BLUEPRINT STORE ============ -->
+<section class="flow" id="catalog">
+  <h2>Buy The Blueprints</h2>
+  <p class="lede">The home you just watched rise — and the rest of the collection. Every set is pre-engineered in cold-formed steel, PE stamped for coastal conditions, and panelized to ship in a standard 40-foot trailer.</p>
+  <div class="cards">
+    <div class="card">
+      <div class="tag">Featured · Beachfront</div>
+      <h3>The Shoreline</h3>
+      <p>3bd / 2ba · 2,000 sf · Modern flat-roof design with a floor-to-ceiling glass wall framing the ocean — the plan in this story.</p>
+      <div class="price">$12,500 — full construction set</div>
+      <a class="btn btn-primary btn-sm" href="mailto:hello@myunityventure.com?subject=Buy%20The%20Shoreline%20Blueprint%20Set">Buy Blueprint Set</a>
+    </div>
+    <div class="card">
+      <div class="tag">Waterfront</div>
+      <h3>The Bayview</h3>
+      <p>3bd / 2ba · 1,800 sf · Dock-ready siting, open great room, salt-air rated steel envelope.</p>
+      <div class="price">$10,500 — full construction set</div>
+      <a class="btn btn-primary btn-sm" href="mailto:hello@myunityventure.com?subject=Buy%20The%20Bayview%20Blueprint%20Set">Buy Blueprint Set</a>
+    </div>
+    <div class="card">
+      <div class="tag">Lakefront</div>
+      <h3>The Lakeshore</h3>
+      <p>4bd / 2.5ba · 2,100 sf · Walkout lower level, panoramic glazing, panelized for a one-day shell build.</p>
+      <div class="price">$11,500 — full construction set</div>
+      <a class="btn btn-primary btn-sm" href="mailto:hello@myunityventure.com?subject=Buy%20The%20Lakeshore%20Blueprint%20Set">Buy Blueprint Set</a>
+    </div>
+  </div>
+  <div class="cta-row">
+    <a class="btn btn-secondary" href="#top">Type Your Address</a>
+  </div>
+</section>
+
+<!-- ============ 10. BUILT ON TRUST / CLOSE ============ -->
+<section class="flow" id="contact">
+  <h2>Built On Trust</h2>
+  <p class="about">
+    <strong>Unity Venture Group</strong> brings Design, Engineering, Architecture and Development together under one
+    accountable team — Owners Representatives who carry a project from feasibility through move-in, working alongside
+    GCs, suppliers and trades for the life of the build. The projects below are the foundation that trust is built on.
+  </p>
+  <div class="cards">
+    <div class="card"><div class="tag">New Waterfront Build</div><h3>Brazos Drive Residence</h3><p>Full feasibility-to-delivery engagement: site report, pre-engineered plan selection, panelized fabrication and on-site assembly for a waterfront family home.</p></div>
+    <div class="card"><div class="tag">Coastal Renovation &amp; Addition</div><h3>344 St. Paul's</h3><p>Owners Rep coordination across design, structural engineering and GC delivery for a coastal renovation and addition, built to current flood and wind standards.</p></div>
+    <div class="card"><div class="tag">Design-Build Delivery</div><h3>Harbor Point Duplex</h3><p>End-to-end design-build for a two-unit waterfront property — architecture, engineering, permitting and construction management under one team.</p></div>
+  </div>
+  <div class="footer-cta">
+    <div>
+      <h2 style="margin-bottom:8px;">Ready to see what you can build?</h2>
+      <p class="lede" style="margin:0;">Five feasibility-call spots open this week.</p>
+    </div>
+    <a class="btn btn-primary" href="mailto:hello@myunityventure.com">Schedule Your Feasibility Call</a>
+  </div>
+  <div class="footer-cta contact" style="border-top:none;margin-top:24px;padding-top:0;">
+    <div>hello@myunityventure.com · MyUnityVenture.com</div>
+  </div>
+</section>
+
+<div class="foot-note">© UVG — Pre-Engineered Coastal Homes · Owners Representative Services</div>
+
+<script>
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+
+/* --- pinned section heights --- */
+const pinSecs = Array.from(document.querySelectorAll('.pinsec'));
+function setupHeights(){ pinSecs.forEach(sec=>{ sec.style.height = (innerHeight + parseInt(sec.dataset.duration||'2000')) + 'px'; }); }
+setupHeights(); addEventListener('resize', setupHeights, {passive:true});
+
+const progressBar = document.getElementById('progress');
+
+/* --- scene 2: address typing --- */
+const ADDR = "142 Shoreline Drive, Beach Haven, FL";
+const s2addr = document.getElementById('s2-addr');
+const s2pin = document.getElementById('s2-pin');
+function scene2(p){
+  const t = clamp((p-0.05)/0.55);
+  const n = Math.floor(t*ADDR.length);
+  s2addr.textContent = ADDR.slice(0,n);
+  s2pin.classList.toggle('show', p>0.65);
+}
+
+/* --- scene 3: report rows --- */
+const reportRows = Array.from(document.querySelectorAll('.report-row'));
+function scene3(p){
+  reportRows.forEach((row,i)=>{
+    const start = 0.05 + i*0.14;
+    row.classList.toggle('show', p>start);
+  });
+}
+
+/* --- scene 4: plan select --- */
+const planCards = [document.getElementById('s4-card1'),document.getElementById('s4-card2'),document.getElementById('s4-card3')];
+function scene4(p){
+  planCards.forEach((c,i)=>{
+    c.classList.toggle('active', i===1 && p>0.35);
+    if(i!==1) c.classList.toggle('active', false);
+  });
+}
+
+/* --- scene 5: factory panels --- */
+const factoryItems = [
+  ['s5-panel1','s5-load1',0.10],
+  ['s5-panel2','s5-load2',0.28],
+  ['s5-panel3','s5-load3',0.46],
+  ['s5-panel4','s5-load4',0.64],
+];
+function scene5(p){
+  factoryItems.forEach(([panelId,loadId,thresh])=>{
+    const panel=document.getElementById(panelId), load=document.getElementById(loadId);
+    const on = p>thresh;
+    panel.style.opacity = on?1:0;
+    panel.style.transform = on?'translateX(0)':'translateX(-260px)';
+    load.style.opacity = (p>thresh+0.15)?1:0;
+  });
+}
+
+/* --- scene 6: road parallax --- */
+const s6far=document.getElementById('s6-far'), s6near=document.getElementById('s6-near'), s6truck=document.getElementById('s6-truck');
+function scene6(p){
+  s6far.style.transform = `translateX(${lerp(0,-120,p)}px)`;
+  s6near.style.transform = `translateX(${lerp(0,-260,p)}px)`;
+  s6truck.style.transform = `translateX(${lerp(-260,1300,p)}px)`;
+}
+
+/* --- scene 7: sky crossfade + house build --- */
+const s7dawn=document.getElementById('s7-dawn'), s7dusk=document.getElementById('s7-dusk');
+const houseParts=['s7-floor','s7-wallL','s7-roof','s7-glass','s7-door'].map(id=>document.getElementById(id));
+function scene7(p){
+  s7dawn.style.opacity = clamp(1 - p*2.2);
+  s7dusk.style.opacity = clamp((p-0.62)/0.38);
+  houseParts.forEach((el,i)=>{
+    const thresh = 0.08 + i*0.16;
+    const on = p>thresh;
+    const isDoor = el.id==='s7-door';
+    el.style.opacity = on?1:0;
+    el.style.transform = on?(isDoor?'scale(1)':'translateY(0)'):(isDoor?'scale(.6)':'translateY(-30px)');
+  });
+}
+
+/* --- generic caption show/hide for data-show-at sections --- */
+function captions(sec,p){
+  sec.querySelectorAll('.copy[data-show-at]').forEach(el=>{
+    const A=parseFloat(el.dataset.showAt||'0.1'), B=parseFloat(el.dataset.hideAt||'0.9');
+    el.classList.toggle('show', p>=A && p<=B);
+  });
+}
+
+const sceneFns = { s2:scene2, s3:scene3, s4:scene4, s5:scene5, s6:scene6, s7:scene7 };
+
+let ticking=false;
+function onScroll(){ if(!ticking){ requestAnimationFrame(update); ticking=true; } }
+addEventListener('scroll', onScroll, {passive:true});
+addEventListener('resize', onScroll, {passive:true});
+
+function update(){
+  const vh = innerHeight, y = scrollY || pageYOffset;
+  pinSecs.forEach(sec=>{
+    const start = sec.offsetTop, span = Math.max(1, sec.offsetHeight - vh);
+    const p = clamp((y - start)/span);
+    captions(sec,p);
+    const fn = sceneFns[sec.id];
+    if(fn) fn(p);
+  });
+  const docH = document.documentElement.scrollHeight - vh;
+  progressBar.style.width = (clamp(y/Math.max(1,docH))*100) + '%';
+  ticking=false;
+}
+
+/* --- reveal-on-scroll for flow sections --- */
+const revealEls = document.querySelectorAll('.cards .card');
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{ threshold:0.2 });
+revealEls.forEach(el=>io.observe(el));
+
+update();
+</script>
+</body>
+</html>
